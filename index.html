@@ -54,7 +54,7 @@
     ylabel('y[n]');<br>
     title('Output Signal');<br><br><br><br>
 
-    2 a <br>
+    2 (a) n pt DTFT<br>
     clc;<br>
     clear all;<br>
     close all;<br>
@@ -96,7 +96,6 @@
     %16-point DTFT<br>
     clear N;<br>
     xn=[ones(1,4) zeros(1,12)];<br>
-    1<br>
     N=16;<br>
     n=0:N-1;<br>
     k=0:N-1;<br>
@@ -107,6 +106,68 @@
     stem(2*pi*k/N,abs(Xk),'filled');<br>
     xlabel('2*pi*k/16');<br>
     ylabel('Magnitude');<br>
-    title('16-point DTFT');<br>
+    title('16-point DTFT');<br><br><br><br>
+
+    2 (B) time shift<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    N=9;<br>
+    n=0:N-1;<br>
+    x=[1 2 3 4 5 6 7 8 9];<br>
+    subplot(131);<br>
+    stem(n,x,'filled');<br><br>
+    xlabel('n');<br>
+    title('x(n)');<br>
+    %x(n-3,mod 9)<br>
+    n1=mod(n-3,N);<br>
+    y1=x(n1+1);<br>
+    subplot(132);<br>
+    stem(n,y1,'filled');<br>
+    xlabel('n');<br>
+    title('x(n-3,mod 9)');<br>
+    %x(n+3,mod 9)<br>
+    n2=mod(n+3,N);<br>
+    y2=x(n2+1);<br>
+    subplot(133);<br>
+    stem(n,y2,'filled');<br>
+    xlabel('n');<br>
+    title('x(n+3,mod 9)');<br><br><br><br>
+
+    2 (b2) time reversal <br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    N=9;<br>
+    n=0:N-1;<br>
+    x=[1 2 3 4 5 6 7 8 9];<br>
+    subplot(221);<br>
+    stem(n,x,'filled');<br>
+    xlabel('n');<br>
+    title('x(n)');<br>
+    %DFT[x(n)]<br>
+    k=0:N-1;<br>
+    WN=exp(-j*2*pi/N*n'*k);<br>
+    Xk=x*WN;<br>
+    subplot(222);<br>
+    stem(k,abs(Xk),'filled');<br>
+    xlabel('k');<br>
+    ylabel('Magnitude');<br>
+    title('DTF[x(n)]');<br>
+    %x(-n,mod 9)<br>
+    n1=mod(-n,N);<br>
+    y1=x(n1+1);<br>
+    subplot(223);<br>
+    stem(n,y1,'filled');<br>
+    xlabel('n');<br>
+    title('x(-n,mod 9)');<br>
+    %DFT[x(-n,mod 9)]<br>
+    WN=exp(-j*2*pi/N*n'*k);<br>
+    Xk=y1*WN;<br>
+    subplot(224);<br>
+    stem(k,abs(Xk),'filled');<br>
+    xlabel('k');<br>
+    ylabel('Magnitude');<br>
+    title('DTF[x(-n,mod 9)]');<br><br><br><br>
 </body>
 </html>
