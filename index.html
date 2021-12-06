@@ -170,7 +170,7 @@
     ylabel('Magnitude');<br>
     title('DTF[x(-n,mod 9)]');<br><br><br><br>
 
-    3 a <br>    
+    3 (a) 4 point convolution<br>    
     clc;<br>
     close all;<br>
     N=4;<br>
@@ -200,7 +200,7 @@
     title('y(n)');<br>
     clear all;<br><br><br><br>
 
-    3 b <br>
+    3 (b) linear convolution using circular convolution <br>
     clc;<br>
     clear all;<br>
     close all;<br>
@@ -234,5 +234,105 @@
     stem(n,y,'filled');<br>
     xlabel('n');<br>
     title('y(n)');<br><br><br><br>
+
+
+    4 (a)  overlab save method<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    n=0:9;<br>
+    N=6;<br>
+    x=n+1;<br>
+    Lenx= length(x);<br>
+    h=[1 0 -1];<br>
+    M=length(h);<br>
+    M1=M-1;<br>
+    L=N-M1;<br>
+    hz=[h zeros(1,N-M)]; %Appending N-M Zeros<br>
+    nhz=0:length(hz)-1;<br>
+    xz=[zeros(1,M1) x zeros(1,N-1)]; %Preappending M-1 Zeros<br>
+    nxz=0:length(xz)-1;<br>
+    K=ceil((Lenx+M1-1)/L);<br>
+    y=zeros(K,N);<br>
+    for i=0:K-1<br>
+    xi=xz(i*L+1:i*L+N)<br>
+    for j=0:N-1<br>
+    m=0:N-1;<br>
+    n1=mod(j-m,N);<br>
+    hs=hz(n1+1);<br>
+    xh=xi.*hs;<br>
+    y(i+1,j+1)=sum(xh);<br>
+    end<br>
+    end<br>
+    y=y(:,M:N)'; %DiscaRding First M-1 Samples<br>
+    y=[y(:)]'; %Concatening The Output<br>
+    ny=0:length(y)-1;<br>
+    subplot(1,3,1);<br>
+    stem(nxz,xz,'filled');<br>
+    xlabel('n');<br>
+    ylabel('x(n)');<br>
+    title('x(n)');<br>
+    subplot(1,3,2);<br>
+    stem(nhz,hz,'filled');<br>
+    xlabel('n');<br>
+    ylabel('h(n)');<br>
+    title('h(n)');<br>
+    subplot(1,3,3);<br>
+    stem(ny,y,'filled');<br>
+    xlabel('n');<br>
+    ylabel('y(n)');<br>
+    title('y(n)');<br><br><br><br>
+
+
+    4 (b) overlap add mathod <br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    n=0:9;<br>
+    N=4;<br>
+    x=n+1;<br>
+    Lenx=length(x);<br>
+    h=[1 0 -1];<br>
+    M=length(h);<br>
+    M1=M-1;<br>
+    L=N+M-1;<br>
+    hz=[h zeros(1,L-M)]; %Appending N-M Zeros<br>
+    nhz=0:length(hz)-1;<br>
+    K=ceil(Lenx/N);<br>
+    xx=[x zeros(1,N*K-Lenx)]; %Preappending M-1 Zeros<br>
+    nxx=0:length(xx)-1;<br>
+    y=zeros(K,N);<br>
+    for i=0:K-1<br>
+    xi=xx(i*N+1:N*(i+1));<br>
+    xr=[xi zeros(1,M1)];<br>
+    for j=0:L-1<br>
+    m=0:L-1;<br>
+    n1=mod(j-m,L);<br>
+    hs=hz(n1+1);<br>
+    xh=xr.*hs;<br>
+    y(i+1,j+1)=sum(xh);<br>
+    end<br>
+    end<br>
+    yy=[]; %Adding Last M-1 Samples<br>
+    for i=1:K-1;<br>
+    y(i,:)=[y(i,1:N) y(i,N+1:L)+y(i+1,1:M1)];<br>
+    end<br>
+    yy=[y(1,1:L) y(2,M:L) y(3,M:L-M1)];<br>
+    ny=0:length(yy)-1;<br>
+    subplot(1,3,1);<br>
+    stem(nxx,xx,'filled');<br>
+    xlabel('n');<br>
+    ylabel('x(n)');<br>
+    title('x(n)');<br>
+    subplot(1,3,2);<br>
+    stem(nhz,hz,'filled');<br>
+    xlabel('n');<br>
+    ylabel('h(n)');<br>
+    title('h(n)');<br>
+    subplot(1,3,3);<br>
+    stem(ny,yy,'filled');<br>
+    xlabel('n');<br>
+    ylabel('y(n)');<br>
+    title('y(n)');<br>
 </body>
 </html>
