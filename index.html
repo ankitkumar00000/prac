@@ -169,5 +169,70 @@
     xlabel('k');<br>
     ylabel('Magnitude');<br>
     title('DTF[x(-n,mod 9)]');<br><br><br><br>
+
+    3 a <br>    
+    clc;<br>
+    close all;<br>
+    N=4;<br>
+    x1=[1 2 2 1];<br>
+    x2=[1 -1 -1 1];<br>
+    y=zeros(1,N);<br>
+    %circular convolution<br>
+    for n=0:N-1<br>
+    m=0:N-1;<br>
+    n1=mod(n-m,N);<br>
+    xs2=x2(n1+1);<br>
+    x12=x1.*xs2;<br>
+    y(n+1)=sum(x12);<br>
+    end<br>
+    n=0:N-1;<br>
+    subplot(131);<br>
+    stem(n,x1,'filled');<br>
+    xlabel('n');<br>
+    title('x1(n)');<br>
+    subplot(132);<br>
+    stem(n,x2,'filled');<br>
+    xlabel('n');<br>
+    title('x2(n)');<br>
+    subplot(133);<br>
+    stem(n,y,'filled');<br>
+    xlabel('n');<br>
+    title('y(n)');<br>
+    clear all;<br><br><br><br>
+
+    3 b <br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    N=4;<br>
+    x1=[1 2 2 1];<br>
+    Nx1=length(x1);<br>
+    x2=[1 -1 -1 1];<br>
+    Nx2=length(x2);<br>
+    Ny=Nx1+Nx2-1;<br>
+    x1z=[x1 zeros(1,Ny-Nx1)];<br>
+    x2z=[x2 zeros(1,Ny-Nx2)];<br>
+    y=zeros(1,Ny);<br>
+    %circular convolution<br>
+    for n=0:Ny-1<br>
+    m=0:Ny-1;<br>
+    n1=mod(n-m,Ny);<br>
+    x2s=x2z(n1+1);<br>
+    x12=x1z.*x2s;<br>
+    y(n+1)=sum(x12);<br>
+    end<br>
+    n=0:Ny-1;<br>
+    subplot(131);<br>
+    stem(n,x1z,'filled');<br>
+    xlabel('n');<br>
+    title('x1(n)');<br>
+    subplot(132);<br>
+    stem(n,x2z,'filled');<br>
+    xlabel('n');<br>
+    title('x2(n)');<br>
+    subplot(133);<br>
+    stem(n,y,'filled');<br>
+    xlabel('n');<br>
+    title('y(n)');<br><br><br><br>
 </body>
 </html>
