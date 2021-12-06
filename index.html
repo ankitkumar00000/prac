@@ -333,6 +333,273 @@
     stem(ny,yy,'filled');<br>
     xlabel('n');<br>
     ylabel('y(n)');<br>
-    title('y(n)');<br>
+    title('y(n)');<br><br><br><br>
+
+
+    5     100 point DFT<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    n=1:100;<br>
+    k=1:100;<br>
+    x=cos(0.48*pi*n)+cos(0.52*pi*n); %Input Signal<br>
+    xpad=[x(1:10),zeros(1,90)]; %Input Signal With Padded Zeros<br>
+    N=100; %N-point DFT<br>
+    w=2*pi/N;<br>
+    subplot(2,2,1);<br>
+    stem(x);<br>
+    title('Input Signal');<br>
+    subplot(2,2,2);<br>
+    stem(abs(x*exp(-1i*(n'*w*k))));<br>
+    title('100-Point DFT of Input Signal');<br>
+    subplot(2,2,3);<br>
+    stem(xpad);<br>
+    title('Input Signal with Padded Zeros');<br>
+    subplot(2,2,4);<br>
+    stem(abs(xpad*exp(-1i*(n'*w*k))));<br>
+    title('10-Point DFT of Input Signal');<br><br><br><br>
+
+
+
+    6    goertzel algo<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    N = 205; %DFT Length<br>
+    n = 0:N - 1;<br>
+    x=sin(2*pi*n*697/8000) + sin(2*pi*n*1209/8000);<br>
+    if(length(x) < N)<br>
+    Xz = [x zeros(1, N - length(x))];<br>
+    else<br>
+    Xz = x;<br>
+    end<br>
+    x1 = [Xz 0];<br>
+    k = [18 20 22 24 31 34 38];<br>
+    for i=1:7<br>
+    W(i) = exp(-j*2*pi*k(i)/N);<br>
+    den(i, :) = [1 -2*cos(2*pi*k(i)/N) 1];<br>
+    vk(i, :) = filter(1, den(i, :), x1);<br>
+    Xk(i) = vk(i, N + 1) - W(i) * vk(i, N);<br>
+    end<br>
+    stem(k, abs(Xk), 'filled');<br>
+    xlabel('k');<br>
+    ylabel('|X(k)|');<br>
+    title('DFT at K = 18, 20, 22, 24, 31, 34, 38');<br><br><br><br>
+
+
+
+    7   FIR filter<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    Fp=2000; %Fp=2KHz<br>
+    Fs=5000; %Fs=5KHz<br>
+    Ft=20000; %Ft=20KHz<br>
+    wp=(2*pi*Fp)/Ft;<br>
+    ws=(2*pi*Fs)/Ft;<br>
+    trwidth=ws-wp; %Transition Width<br>
+    M=ceil(6.2*pi/trwidth)+2; %Filter Length<br>
+    tau=(M-1)/2;<br>
+    wc=(wp+ws)/2;<br>
+    n=0:M-1;<br>
+    hd=(sin(wc*(n-tau)))./(pi*(n-tau));<br>
+    hd(tau+1)=0.35;<br>
+    whan=hann(M)';<br>
+    h=hd.*whan;<br>
+    w=0:0.02:pi;<br>
+    Hw=freqz(h,1,w);<br>
+    MagHw=abs(Hw); %Magnitude Response<br>
+    HwdB=20*log10(MagHw/max(MagHw)); %In Decibels<br>
+    subplot(2,2,1);<br>
+    stem(n,hd,'filled');<br>
+    axis([-1 M -0.15 0.5]);<br>
+    xlabel('n');<br>
+    ylabel('hd(n)');<br>
+    title('Ideal Impulse Response');<br>
+    subplot(2,2,2);<br>
+    stem(n,whan,'filled');<br>
+    axis([-1 M -0.1 1.2]);<br>
+    xlabel('n');<br>
+    ylabel('w(n)');<br>
+    title('Hann Window');<br>
+    subplot(2,2,3);<br>
+    stem(n,h,'filled');<br>
+    axis([-1 M -0.15 0.5]);<br>
+    xlabel('n');<br>
+    ylabel('w(n)');<br>
+    title('Practical Impulse Response');<br>
+    subplot(2,2,4);<br>
+    plot(w/pi,HwdB);<br>
+    axis([0 1 -100 10]);<br>
+    xlabel('Frequency (in pi units)');<br>
+    ylabel('dB');<br>
+    title('Magnitude Response');<br><br><br><br>
+
+
+
+    8    hamming window<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    M=21; %Hamming Window Length=21<br>
+    tau=(M-1)/2;<br>
+    n=0:M-1;<br>
+    hd=((cos(pi*(n-tau)))./(n-tau))-((sin(pi*(n-tau)))./(pi*(n-tau).^2));<br>
+    hd(tau+1)=0;<br>
+    whamm=hamming(M)';<br>
+    h=hd.*whamm;<br>
+    w=0:0.01:pi;<br>
+    Hw=freqz(h,1,w);<br>
+    Hrw=exp(-j*(pi/2-10*w)).*Hw;<br>
+    subplot(2,2,1);<br>
+    stem(n,hd,'filled');<br>
+    axis([-1 M -1.2 1.2]);<br>
+    xlabel('n');<br>
+    ylabel('hd(n)');<br>
+    title('Ideal Impulse Response');<br>
+    subplot(2,2,2);<br>
+    stem(n,whamm,'filled');<br>
+    axis([-1 M -0.2 1.2]);<br>
+    xlabel('n');<br>
+    ylabel('w(n)');<br>
+    title('Hamming Window');<br>
+    subplot(2,2,3);<br>
+    stem(n,h,'filled');<br>
+    axis([-1 M -1.2 1.2]);<br>
+    xlabel('n');<br>
+    ylabel('h(n)');<br>
+    title('Practical Impulse Response');<br>
+    subplot(2,2,4);<br>
+    plot(w,Hrw);<br>
+    axis([0 pi 0 pi]);<br>
+    xlabel('Frequency');<br>
+    ylabel('Amplitude');<br>
+    title('Amplitude Response');<br><br><br><br>
+
+
+
+    9   hanning window<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    M=25; %Hamming Window Length=25<br>
+    tau=(M-1)/2;<br>
+    n=0:M-1;<br>
+    hd=(2./(pi*(n-tau))).*(sin(pi*(n-tau)/2).^2);<br>
+    hd(tau+1)=0;<br>
+    whamm=hamming(M)';<br>
+    h=hd.*whamm;<br>
+    w=-pi:0.01:pi;<br>
+    Hw=freqz(h,1,w);<br>
+    Hrw=exp(-j*(pi/2-12*w)).*Hw;<br>
+    subplot(2,2,1);<br>
+    stem(n,hd,'filled');<br>
+    axis([-1 M -0.8 1]);<br>
+    xlabel('n');<br>
+    ylabel('hd(n)');<br>
+    title('Ideal Impulse Response');<br>
+    subplot(2,2,2);<br>
+    stem(n,whamm,'filled');<br>
+    axis([-1 M -0.2 1.2]);<br>
+    xlabel('n');<br>
+    ylabel('w(n)');<br>
+    title('Hamming Window');<br>
+    subplot(2,2,3);<br>
+    stem(n,h,'filled');<br>
+    axis([-1 M -0.8 1]);<br>
+    xlabel('n');<br>
+    ylabel('h(n)');<br>
+    title('Practical Impulse Response');<br>
+    subplot(2,2,4);<br>
+    plot(w/pi,Hrw);<br>
+    axis([-1 1 -1.2 1.2]);<br>
+    xlabel('Frequency in pi Units');<br>
+    ylabel('Amplitude');<br>
+    title('Amplitude Response');<br><br><br><br>
+
+
+
+    10    butterworth<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    T = 1;<br>
+    wp = 0.3 * pi;<br>
+    ws = 0.8 * pi;<br>
+    Ap = 1;<br>
+    As = 40;<br>
+    Wp = (2/T) * tan(wp/2); %Analog Passband Edge Freq<br>
+    Ws = (2/T) * tan(ws/2); %Analog Stopband Edge Freq<br>
+    R = (10^(0.1 * Ap) - 1) / (10 ^ (0.1 * As) - 1);<br>
+    N = ceil((1/2)*(log10(R)/(log10(Wp/Ws))));<br>
+    Wc = Wp/((10 ^ (0.1 * Ap) - 1) ^ (1 / (2 * N)));<br>
+    [b,a] = butter(N, Wc, 'low', 'S');<br>
+    Hs = tf(b, a);<br>
+    [numd, dend] = bilinear(b, a, 1/T);<br>
+    Hz = tf(numd, dend, T);<br>
+    W = 0:0.01:pi;<br>
+    Hw = freqz(numd, dend, W);<br>
+    subplot(121);<br>
+    plot(W, abs(Hw));<br>
+    xlabel('Frequency');<br>
+    ylabel('Magnitude, M');<br>
+    subplot(122);<br>
+    plot(W, 20*log10(abs(Hw)));<br>
+    xlabel('Frequency');<br>
+    ylabel('Magnitude(dB)');<br><br><br><br>
+
+
+
+    11     quantization<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    x = 3/8;<br>
+    B = 2;<br>
+    x1 = abs(x);<br>
+    Qx = 0;<br>
+    for k=1:B<br>
+    Qxbeq(k) = fix(x1 * 2);<br>
+    Qx = fix(x1 * 2)/(2^k) + Qx;<br>
+    x1 = (x1 * 2) - fix(x1 * 2);<br>
+    end<br>
+    sg = sign(x);<br>
+    if (sg > 0)<br>
+    Qxbeq = [0 Qxbeq];<br>
+    else<br>
+    Qxbeq = [1 Qxbeq];<br>
+    end<br>
+    disp('Truncated Number:');<br>
+    disp(Qx);<br>
+    disp('Binary Equivalent of Truncated Number:');<br>
+    disp(Qxbeq);<br><br><br><br>
+
+
+
+    12      rounding using quantization<br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    a = -1/2;<br>
+    B = 4;<br>
+    x = [7/8 zeros(1, 20)];<br>
+    y_cap = 0;<br>
+    for n=1:21<br>
+    %Rounding<br>
+    Ay = abs(a * y_cap);<br>
+    Ay = Ay + (1/2) * 2 ^ (-B);<br>
+    Qy = 0;<br>
+    for k=1:B<br>
+    Qy = fix(Ay * 2)/(2^k) + Qy;<br>
+    Ay = (Ay * 2) - fix(Ay * 2);<br>
+    end<br>
+    Qy = sign(a * y_cap) * Qy;<br>
+    y(n) = Qy + x(n);<br>
+    y_cap = y(n);<br>
+    end<br>
+    k = 0:20;<br>
+    stem(k, y, 'filled');<br>
+    xlabel('Time Index n');<br>
+    ylabel('Amplitude');<br>
 </body>
 </html>
