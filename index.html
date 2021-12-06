@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    1 i transfer fn and its plot<br>
+    clc;<br>
+    clear all ;<br>
+    close all;<br>
+    x=[1]; %Numerator of Transfer Function<br>
+    y=[1,-0.9]; %Denominator of Transfer Function<br>
+    subplot(3,1,1)<br>
+    zplane(x,y); %Pole-Zero Plot<br><br><br><br>
+
+    1 b freq response and phase response ke plot<br>
+    clc;<br>
+    clear all ;<br>
+    close all;<br>
+    x=[1]; %Numerator of Transfer Function<br>
+    y=[1,-0.9]; %Denominator of Transfer Function<br>
+    w=linspace(-2*pi,2*pi);<br>
+    H=freqz(x,y,w);<br>
+    magH=abs(H);<br>
+    angH=angle(H);<br>
+    subplot(3,1,2);<br>
+    plot(w/pi,magH);<br>
+    xlabel('Frequency in pi');<br>
+    ylabel('Magnitude');<br>
+    title('Magnitude Response');<br>
+    subplot(3,1,3);<br>
+    plot(w/pi,angH);<br>
+    xlabel('Frequency in Pi');<br>
+    ylabel('Phase in Pi radians');<br>
+    title('Phase Response');<br><br><br><br>
+
+    1 c steady state response<br>
+    x=[1]; %Numerator of Transfer Function <br>
+    y=[1,-0.9]; %Denominator of Transfer Function<br>
+    n=[0:150];<br>
+    z=cos(0.05*pi*n);<br>
+    a=filter(x,y,z);<br>
+    subplot(2,1,1);<br>
+    stem(n,z);<br>
+    xlabel('n');<br>
+    ylabel('x[n]');<br>
+    title('Input Signal');<br>
+    subplot(2,1,2);<br>
+    stem(n,a);<br>
+    xlabel('n');<br>
+    ylabel('y[n]');<br>
+    title('Output Signal');<br><br><br><br>
+
+    2 a <br>
+    clc;<br>
+    clear all;<br>
+    close all;<br>
+    %DTFT<br>
+    w=0:0.01:2*pi;<br>
+    Xw=1+exp(-j*w)+exp(-j*2*w)+exp(-j*3*w);<br>
+    %4-point DTFT<br>
+    xn=ones(1,4);<br>
+    N=4;<br>
+    n=0:N-1;<br>
+    k=0:N-1;<br>
+    WN=exp(-j*2*pi/N*n'*k);<br>
+    Xk=xn*WN;<br>
+    subplot(221);<br>
+    plot(w,abs(Xw));<br>
+    xlabel('Frequency');<br>
+    ylabel('Magnitude');<br>
+    title('DTFT');<br>
+    subplot(222);<br>
+    plot(w,abs(Xw));hold on<br>
+    stem(2*pi*k/N,abs(Xk),'filled');<br>
+    xlabel('2*pi*k/4');<br>
+    ylabel('Magnitude');<br>
+    title('4-point DTFT');<br>
+    %8-point DTFT<br>
+    clear N;<br>
+    xn=[ones(1,4) zeros(1,4)];<br>
+    N=8;<br>
+    n=0:N-1;<br>
+    k=0:N-1;<br>
+    WN=exp(-j*2*pi/N*n'*k);<br>
+    Xk=xn*WN;<br>
+    subplot(223);<br>
+    plot(w,abs(Xw));hold on<br>
+    stem(2*pi*k/N,abs(Xk),'filled');<br>
+    xlabel('2*pi*k/8');<br>
+    ylabel('Magnitude');<br>
+    title('8-point DTFT');<br>
+    %16-point DTFT<br>
+    clear N;<br>
+    xn=[ones(1,4) zeros(1,12)];<br>
+    1<br>
+    N=16;<br>
+    n=0:N-1;<br>
+    k=0:N-1;<br>
+    WN=exp(-j*2*pi/N*n'*k);<br>
+    Xk=xn*WN;<br>
+    subplot(224);<br>
+    plot(w,abs(Xw));hold on<br>
+    stem(2*pi*k/N,abs(Xk),'filled');<br>
+    xlabel('2*pi*k/16');<br>
+    ylabel('Magnitude');<br>
+    title('16-point DTFT');<br>
+</body>
+</html>
